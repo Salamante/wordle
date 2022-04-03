@@ -1,0 +1,30 @@
+
+html {
+	background: #374151;
+}
+.text-red-400 {
+  --tw-text-opacity: 1;
+  color: rgba(248, 113, 113, var(--tw-text-opacity));
+}
+.dark .dark\:text-green-400 {
+  --tw-text-opacity: 1;
+  color: rgba(52, 211, 153, var(--tw-text-opacity));
+}
+.btn {
+	background-color: orangered;
+	border-radius: 8px;
+	padding: 5px 10px 5px 10px;
+	color: white;
+	font-weight: 600;
+	transition: all 0.3s;
+}
+.btn:hover {
+	background-color: orange;
+}
+.btn-icon {
+	background-color: transparent;
+	transition: all 0.3s;
+}
+.btn-icon:hover {
+	color: orange;
+}
