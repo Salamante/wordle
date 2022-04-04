@@ -28,3 +28,9 @@ html {
 .btn-icon:hover {
 	color: orange;
 }
+.key {
+	transition: all 0.3s;
+}
+.key:hover {
+	background: tan;
+}
