@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { reactive, ref, onMounted, defineEmits } from 'vue';
+import { reactive, ref, onMounted } from 'vue';
 	const keys_first_row = ref([
 		"q", "w", "e", "r", "t", "y", "u", "ı", "o", "p", "ğ", "ü"
 	])

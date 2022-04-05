@@ -5,24 +5,17 @@
 	import { ref, onMounted } from "vue";
 
 	const kb = ref()
-	function log(payload: any) {
-		console.log(payload)
-	}
-
+	const keys = ref([])
 	onMounted(() => {
-		document.getElementsByTagName('html')[0].addEventListener('keydown', (e) => {
-			if(kb.value.keys_all.includes(e.key)) {
-				console.log(e.key)
-			}
-		})
+		keys.value = kb.value.keys_all
 	})
 </script>
 <template>
 	<div class="w-full">
 		<Navbar />
 		<div class="divider"></div>
-		<Grid />
-		<Keyboard ref="kb" @test="log"/>
+		<Grid :keys="keys"/>
+		<Keyboard ref="kb" />
 	</div>
 </template>
 
