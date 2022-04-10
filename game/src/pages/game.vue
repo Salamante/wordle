@@ -4,8 +4,17 @@
 	import Keyboard from "@/components/keyboard.vue"
 	import { ref, onMounted } from "vue";
 
+	/* refs */
 	const kb = ref()
+	const grid = ref()
+
+
 	const keys = ref([])
+	const clickedKey = ref("")
+
+	const onKey = (key: string) => {
+		grid.value.controllerWord(key.toUpperCase())
+	}
 	onMounted(() => {
 		keys.value = kb.value.keys_all
 	})
@@ -14,8 +23,8 @@
 	<div class="w-full">
 		<Navbar />
 		<div class="divider"></div>
-		<Grid :keys="keys"/>
-		<Keyboard ref="kb" />
+		<Grid ref="grid" :keys="keys"/>
+		<Keyboard ref="kb" @onKey="onKey"/>
 	</div>
 </template>
 

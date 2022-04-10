@@ -11,14 +11,11 @@ import { reactive, ref, onMounted } from 'vue';
 	])
 	const keys_all: any = ref([keys_first_row.value, keys_second_row.value, keys_third_row.value].flat())
 
-	const emit = defineEmits(["test"])
-	function firstEmit() {
-		emit('test', 'deneme')
+	const emit = defineEmits(["onKey"])
+	function onClickKey(key: string) {
+		emit('onKey', key)
 	}
 	onMounted(() => {
-		setTimeout(() => {
-			firstEmit()
-		}, 1000);
 	})
 
 	defineExpose({
@@ -27,28 +24,31 @@ import { reactive, ref, onMounted } from 'vue';
 </script>
 <template>
 	<div class="flex flex-col mt-10 font-bold w-full">
-		<div style="gap: 10px" class="flex flex-row justify-center content-center w-full cursor-pointer">
+		<div style="gap: 5px" class="flex flex-row justify-center content-center w-full cursor-pointer">
 			<div
 				v-for="(key, i) in keys_first_row"
-				class="h-20 w-20 min-h-5 max-h-40 min-w-5 max-w-40 bg-dark-500 text-light-50 rounded-md flex items-center justify-center key"
+				class="h-8 w-8 bg-dark-500 text-light-50 rounded-md flex items-center justify-center key"
+				@click="onClickKey(key)"
 			>
-				<span class="p-2">{{ key.toUpperCase() }}</span>
+				<span>{{ key.toUpperCase() }}</span>
 			</div>
 		</div>
-		<div style="gap: 10px" class="flex flex-row justify-center content-center w-full mt-5">
+		<div style="gap: 5px" class="flex flex-row justify-center content-center w-full mt-2 cursor-pointer">
 			<div
 				v-for="(key, i) in keys_second_row"
-				class="h-20 w-20 min-h-5 max-h-40 min-w-5 max-w-40 bg-dark-500 text-light-50 rounded-md flex items-center justify-center"
+				class="h-8 w-8 bg-dark-500 text-light-50 rounded-md flex items-center justify-center key"
+				@click="onClickKey(key)"
 			>
-				<span class="p-2">{{ key != 'i' ? key.toUpperCase() : key }}</span>
+				<span>{{ key != 'i' ? key.toUpperCase() : key }}</span>
 			</div>
 		</div>
-		<div style="gap: 10px" class="flex flex-row justify-center content-center w-full mt-5">
+		<div style="gap: 5px" class="flex flex-row justify-center content-center w-full mt-2 cursor-pointer">
 			<div
 				v-for="(key, i) in keys_third_row"
-				class="h-20 w-20 min-h-5 max-h-40 min-w-5 max-w-40 bg-dark-500 text-light-50 rounded-md flex items-center justify-center"
+				class="h-8 w-8 bg-dark-500 text-light-50 rounded-md flex items-center justify-center key"
+				@click="onClickKey(key)"
 			>
-				<span class="p-2">{{ key != 'i' ? key.toUpperCase() : key }}</span>
+				<span>{{ key != 'i' ? key.toUpperCase() : key }}</span>
 			</div>
 		</div>
 	</div>
