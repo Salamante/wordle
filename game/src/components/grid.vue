@@ -15,6 +15,7 @@
 
 <script setup lang="ts">
 import { reactive, onMounted, ref, computed } from 'vue';
+import axios from 'axios'
 const rows = reactive([
 	{ id: "first-row", value: "" },
 	{ id: "second-row", value: "" },
@@ -34,7 +35,7 @@ function controllerWord(key: string) {
 		rows[activeRow.value].value += key
 	}
 }
-function handleKeyDown(e: KeyboardEvent) {
+async function handleKeyDown(e: KeyboardEvent) {
 	console.log(e.key)
 	if(e.key.toLowerCase() == 'backspace') {
 		rows[activeRow.value].value = rows[activeRow.value].value.slice(0, -1)
@@ -42,6 +43,13 @@ function handleKeyDown(e: KeyboardEvent) {
 	}
 	if(e.key.toLowerCase() == 'enter') {
 		// make API call
+		try {
+			const result = await axios.get(`https://api.dictionaryapi.dev/api/v2/entries/en/${rows[activeRow.value].value}`)
+			console.log(result)
+		} catch(err) {
+			console.log("HASS...")
+			console.error(err)
+		}
 	}
 	if (props.keys.includes(e.key)) {
 		controllerWord(e.key.toUpperCase())
