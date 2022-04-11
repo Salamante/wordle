@@ -10,10 +10,12 @@
 				>{{ row.value[idx - 1] }}</div>
 			</div>
 		</div>
+		<Alert ref="alert" :text="'Invalid Word'"/>
 	</div>
 </template>
 
 <script setup lang="ts">
+import Alert from './helpers/alert.vue'
 import { reactive, onMounted, ref, computed } from 'vue';
 import axios from 'axios'
 const rows = reactive([
@@ -30,6 +32,7 @@ const props = defineProps({
 	}
 })
 const activeRow = ref(0)
+const alert = ref()
 function controllerWord(key: string) {
 	if(rows[activeRow.value].value.length < 5) {
 		rows[activeRow.value].value += key
@@ -47,7 +50,7 @@ async function handleKeyDown(e: KeyboardEvent) {
 			const result = await axios.get(`https://api.dictionaryapi.dev/api/v2/entries/en/${rows[activeRow.value].value}`)
 			console.log(result)
 		} catch(err) {
-			console.log("HASS...")
+			alert.value.animate()
 			console.error(err)
 		}
 	}
