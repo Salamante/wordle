@@ -11,10 +11,11 @@ const port: String = '8081'
 const rndWord: string = "table"
 
 app.use(cors())
-app.use(express.static(pathBuild))
+// app.use(express.static(pathBuild))
 
-app.get('/api/random', mw, (req: Request, res: Response) => {
-	res.send(Test(rndWord, 'apple'))
+app.get('/api/random/:word', mw, (req: Request, res: Response) => {
+	console.log(req.params.word)
+	res.send(Test(rndWord, req.params.word))
 })
 
 app.listen(port, () => {

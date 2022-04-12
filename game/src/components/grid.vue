@@ -17,7 +17,10 @@
 <script setup lang="ts">
 import Alert from './helpers/alert.vue'
 import { reactive, onMounted, ref, computed } from 'vue';
-import axios from 'axios'
+interface Keys {
+	match: boolean,
+	contains: boolean
+}
 const rows = reactive([
 	{ id: "first-row", value: "" },
 	{ id: "second-row", value: "" },
@@ -31,11 +34,17 @@ const props = defineProps({
 		default: []
 	}
 })
+const emits = defineEmits(['submit'])
 const activeRow = ref(0)
 const alert = ref()
 function controllerWord(key: string) {
 	if(rows[activeRow.value].value.length < 5) {
 		rows[activeRow.value].value += key
+	}
+}
+function controllerRow() {}
+function onSubmitSuccess(values: Keys[]) {
+	for (let i = 0; i < values.length; i++) {
 	}
 }
 async function handleKeyDown(e: KeyboardEvent) {
@@ -45,14 +54,7 @@ async function handleKeyDown(e: KeyboardEvent) {
 		return
 	}
 	if(e.key.toLowerCase() == 'enter') {
-		// make API call
-		try {
-			const result = await axios.get(`https://api.dictionaryapi.dev/api/v2/entries/en/${rows[activeRow.value].value}`)
-			console.log(result)
-		} catch(err) {
-			alert.value.animate()
-			console.error(err)
-		}
+			emits('submit', rows[activeRow.value].value)
 	}
 	if (props.keys.includes(e.key)) {
 		controllerWord(e.key.toUpperCase())
@@ -64,12 +66,17 @@ const listenKey = () => {
 const stopListen = () => {
 	document.getElementsByTagName('html')[0].removeEventListener('keydown', handleKeyDown)
 }
+const err = () => {
+	alert.value.animate()
+}
 onMounted(() => {
 	listenKey()
 })
 
 defineExpose({
-	controllerWord
+	controllerWord,
+	onSubmitSuccess,
+	err
 })
 </script>
 
