@@ -21,8 +21,7 @@
 
 	const keys = ref([])
 	const clickedKey = ref("")
-	let result: Response
-	const server: string = "http://localhost:8081/api/random"
+	let result: Response 
 
 	const onKey = (key: string) => {
 		grid.value.controllerWord(key.toUpperCase())
@@ -31,7 +30,7 @@
 		try {
 			result = await axios.get(`https://api.dictionaryapi.dev/api/v2/entries/en/${res}`)
 			console.log(result.data)
-			const response = await axios.get(`${server}/${res.toLowerCase()}`)
+			const response = await axios.get(`http://localhost:8081/api/random/${res.toLowerCase()}`)
 			console.log(response.data)
 			grid.value.onSubmitSuccess(response.data)
 		} catch (err) {

@@ -1,35 +1,32 @@
 <template>
 	<div style="gap: 10px" class="flex flex-col w-full justify-center items-center mt-10">
-		<div v-for="(row, i) in rows" :id="row.id" :key="i" class="w-full">
+		<div v-for="(row, i) in rows" :id="row.id" class="w-full">
 			<div style="gap: 10px" class="flex flex-row justify-center">
 				<div
 					class="box text-light-800 flex justify-center items-center font-bold text-[2.23rem]"
 					:class="{'box-full' : !!row.value[idx - 1]}"
 					v-for="idx in 5"
-					:id="row.id + '-' + (idx - 1)"
-					:key="idx"
+					:id="row.id + '-' + idx"
 				>{{ row.value[idx - 1] }}</div>
 			</div>
 		</div>
 		<Alert ref="alert" :text="'Invalid Word'"/>
-		<div id="lottie" style="position: absolute; width: 100vw; height: 100vh;"></div>
 	</div>
 </template>
 
 <script setup lang="ts">
 import Alert from './helpers/alert.vue'
-import Lottie from 'lottie-web'
 import { reactive, onMounted, ref, computed } from 'vue';
 interface Keys {
 	match: boolean,
 	contains: boolean
 }
 const rows = reactive([
-	{ id: "row-0", value: "" },
-	{ id: "row-1", value: "" },
-	{ id: "row-2", value: "" },
-	{ id: "row-3", value: "" },
-	{ id: "row-4", value: "" },
+	{ id: "first-row", value: "" },
+	{ id: "second-row", value: "" },
+	{ id: "third-row", value: "" },
+	{ id: "forth-row", value: "" },
+	{ id: "fifth-row", value: "" },
 ])
 const props = defineProps({
 	keys: {
@@ -46,31 +43,9 @@ function controllerWord(key: string) {
 	}
 }
 function controllerRow() {}
-async function onSubmitSuccess(values: Keys[]) {
-	let isFound: number = 0
+function onSubmitSuccess(values: Keys[]) {
 	for (let i = 0; i < values.length; i++) {
-		await (function sleep() {
-			return new Promise((resolve) => {
-				setTimeout(resolve, 300)
-			})
-		})()
-		const el: any = document.querySelector<HTMLElement>(`#row-${activeRow.value}-${i}`)
-		if(!values[i].contains) {
-			anim(el, "gray")
-			continue
-		}
-		if(!values[i].match && values[i].contains) {
-			anim(el, "#ccca58")
-		} else {
-			anim(el, "#509c4b")
-			isFound += 1
-		}
 	}
-	if(isFound === 5) {
-		stopListen()
-		firework()
-	}
-	activeRow.value += 1
 }
 async function handleKeyDown(e: KeyboardEvent) {
 	console.log(e.key)
@@ -94,19 +69,6 @@ const stopListen = () => {
 const err = () => {
 	alert.value.animate()
 }
-const anim = (el: HTMLElement, color: string) => {
-	el.classList.toggle("rotate")
-	el.style.background = color
-}
-const firework = () => {
-	Lottie.loadAnimation({
-		container: document.getElementById("lottie"),
-		renderer: "svg",
-		loop: false,
-		autoplay: true,
-		path: "src/assets/lottie/data.json",
-	})
-}
 onMounted(() => {
 	listenKey()
 })
@@ -124,12 +86,9 @@ defineExpose({
 	aspect-ratio: 1;
 	border: 2px solid rgb(179, 179, 179);
 	flex-grow: 1;
-	transition: background 0.3s, transform 2s ;
+	transition: all 0.5s;
 }
 .box-full {
 	background: rgb(32, 32, 32);
-}
-.rotate {
-	transform: rotate3d(0, 0.5, 0, 360deg);
 }
 </style>
