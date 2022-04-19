@@ -2,7 +2,7 @@
 	<div style="gap: 10px" class="flex flex-col w-full justify-center items-center mt-10">
 		<div v-for="(row, i) in rows" :id="row.id" class="w-full">
 			<div style="gap: 10px" class="flex flex-row justify-center">
-				<div class="box box-border text-light-800 flex justify-center items-center font-bold text-[2.23rem]"
+				<div class="box box-border text-light-800 flex justify-center items-center font-bold text-[2.23rem] rounded-md"
 					:class="{ 'box-full': !!row.value[idx - 1] }" v-for="idx in 5" :id="row.id + '-' + (idx - 1)" :key="idx">{{
 						row.value[idx - 1]
 					}}</div>
@@ -54,13 +54,13 @@ async function onSubmitSuccess(values: Keys[]) {
 		})()
 		const el: any = document.querySelector<HTMLElement>(`#row-${activeRow.value}-${i}`)
 		if (!values[i].contains) {
-			anim(el, "gray")
+			anim(el, "#3d4054")
 			continue
 		}
 		if (!values[i].match && values[i].contains) {
-			anim(el, "#ccca58")
+			anim(el, "#f3c237")
 		} else {
-			anim(el, "#509c4b")
+			anim(el, "#6ac66a")
 			isFound += 1
 		}
 	}
@@ -85,6 +85,7 @@ async function handleKeyDown(e: KeyboardEvent) {
 }
 const anim = (el: HTMLElement, color: string) => {
 	el.classList.toggle("rotate")
+	el.classList.remove("box-border")
 	el.style.background = color
 }
 const firework = () => {
