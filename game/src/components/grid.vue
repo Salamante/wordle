@@ -2,19 +2,19 @@
 	<div style="gap: 10px" class="flex flex-col w-full justify-center items-center mt-10">
 		<div v-for="(row, i) in rows" :id="row.id" class="w-full">
 			<div style="gap: 10px" class="flex flex-row justify-center">
-				<div
-					class="box text-light-800 flex justify-center items-center font-bold text-[2.23rem]"
-					:class="{'box-full' : !!row.value[idx - 1]}"
-					v-for="idx in 5"
-					:id="row.id + '-' + idx"
-				>{{ row.value[idx - 1] }}</div>
+				<div class="box box-border text-light-800 flex justify-center items-center font-bold text-[2.23rem]"
+					:class="{ 'box-full': !!row.value[idx - 1] }" v-for="idx in 5" :id="row.id + '-' + (idx - 1)" :key="idx">{{
+						row.value[idx - 1]
+					}}</div>
 			</div>
 		</div>
-		<Alert ref="alert" :text="'Invalid Word'"/>
+		<Alert ref="alert" :text="'Invalid Word'" />
+		<div v-show="isLottie" id="lottie" style="position: fixed; width: 100vw; height: 100vh; top: 50px"></div>
 	</div>
 </template>
 
 <script setup lang="ts">
+import Lottie from 'lottie-web'
 import Alert from './helpers/alert.vue'
 import { reactive, onMounted, ref, computed } from 'vue';
 interface Keys {
@@ -22,11 +22,11 @@ interface Keys {
 	contains: boolean
 }
 const rows = reactive([
-	{ id: "first-row", value: "" },
-	{ id: "second-row", value: "" },
-	{ id: "third-row", value: "" },
-	{ id: "forth-row", value: "" },
-	{ id: "fifth-row", value: "" },
+	{ id: "row-0", value: "" },
+	{ id: "row-1", value: "" },
+	{ id: "row-2", value: "" },
+	{ id: "row-3", value: "" },
+	{ id: "row-4", value: "" },
 ])
 const props = defineProps({
 	keys: {
@@ -37,28 +37,65 @@ const props = defineProps({
 const emits = defineEmits(['submit'])
 const activeRow = ref(0)
 const alert = ref()
+const isLottie = ref(false)
 function controllerWord(key: string) {
-	if(rows[activeRow.value].value.length < 5) {
+	if (rows[activeRow.value].value.length < 5) {
 		rows[activeRow.value].value += key
 	}
 }
-function controllerRow() {}
-function onSubmitSuccess(values: Keys[]) {
+function controllerRow() { }
+async function onSubmitSuccess(values: Keys[]) {
+	let isFound: number = 0
 	for (let i = 0; i < values.length; i++) {
+		await (function sleep() {
+			return new Promise((resolve) => {
+				setTimeout(resolve, 300)
+			})
+		})()
+		const el: any = document.querySelector<HTMLElement>(`#row-${activeRow.value}-${i}`)
+		if (!values[i].contains) {
+			anim(el, "gray")
+			continue
+		}
+		if (!values[i].match && values[i].contains) {
+			anim(el, "#ccca58")
+		} else {
+			anim(el, "#509c4b")
+			isFound += 1
+		}
 	}
+	if (isFound === 5) {
+		stopListen()
+		firework()
+	}
+	activeRow.value += 1
 }
 async function handleKeyDown(e: KeyboardEvent) {
 	console.log(e.key)
-	if(e.key.toLowerCase() == 'backspace') {
+	if (e.key.toLowerCase() == 'backspace') {
 		rows[activeRow.value].value = rows[activeRow.value].value.slice(0, -1)
 		return
 	}
-	if(e.key.toLowerCase() == 'enter') {
-			emits('submit', rows[activeRow.value].value)
+	if (e.key.toLowerCase() == 'enter') {
+		emits('submit', rows[activeRow.value].value)
 	}
 	if (props.keys.includes(e.key)) {
 		controllerWord(e.key.toUpperCase())
 	}
+}
+const anim = (el: HTMLElement, color: string) => {
+	el.classList.toggle("rotate")
+	el.style.background = color
+}
+const firework = () => {
+	isLottie.value = true
+	Lottie.loadAnimation({
+		container: document.getElementById("lottie"),
+		renderer: "svg",
+		loop: false,
+		autoplay: true,
+		path: "src/assets/lottie/data.json",
+	})
 }
 const listenKey = () => {
 	document.getElementsByTagName('html')[0].addEventListener('keydown', handleKeyDown)
@@ -84,11 +121,19 @@ defineExpose({
 .box {
 	max-width: 50px;
 	aspect-ratio: 1;
-	border: 2px solid rgb(179, 179, 179);
 	flex-grow: 1;
-	transition: all 0.5s;
+	transition: background 0.3s, transform 2s;
 }
+
+.box-border {
+	border: 2px solid rgb(179, 179, 179);
+}
+
 .box-full {
 	background: rgb(32, 32, 32);
+}
+
+.rotate {
+	transform: rotate3d(0, 0.5, 0, 360deg);
 }
 </style>
