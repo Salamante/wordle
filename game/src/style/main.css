@@ -1,6 +1,6 @@
-
 html {
 	background: #0d1117;
+	overflow: hidden;
 }
 .text-red-400 {
   --tw-text-opacity: 1;
@@ -11,15 +11,17 @@ html {
   color: rgba(52, 211, 153, var(--tw-text-opacity));
 }
 .btn {
-	background-color: orangered;
-	border-radius: 8px;
+	background-color: orange;
+	border-radius: 5px;
 	padding: 5px 10px 5px 10px;
 	color: white;
 	font-weight: 600;
+	font-size: 0.8rem;
 	transition: all 0.3s;
+	cursor: pointer;
 }
 .btn:hover {
-	background-color: orange;
+	background-color: orangered;
 }
 .btn-icon {
 	background-color: transparent;
@@ -31,6 +33,13 @@ html {
 .key {
 	transition: all 0.3s;
 }
-.key:hover {
-	background: tan;
+
+.fade-enter-active,
+.fade-leave-active {
+  transition: opacity 0.5s ease;
+}
+
+.fade-enter-from,
+.fade-leave-to {
+  opacity: 0;
 }

@@ -44,11 +44,23 @@ import { reactive, ref, onMounted } from 'vue';
 		</div>
 		<div style="gap: 5px" class="flex flex-row justify-center content-center w-full mt-2 cursor-pointer">
 			<div
+				class="h-8 w-16 bg-dark-500 text-light-50 rounded-md flex items-center justify-center key"
+				@click="onClickKey('backspace')"
+			>
+				<i class="fa-regular fa-delete-left"></i>
+			</div>
+			<div
 				v-for="(key, i) in keys_third_row"
 				class="h-8 w-8 bg-dark-500 text-light-50 rounded-md flex items-center justify-center key"
 				@click="onClickKey(key)"
 			>
 				<span>{{ key != 'i' ? key.toUpperCase() : key }}</span>
+			</div>
+			<div
+				class="h-8 w-16 bg-dark-500 text-light-50 rounded-md flex items-center justify-center key"
+				@click="onClickKey('enter')"
+			>
+				<span>ENTER</span>
 			</div>
 		</div>
 	</div>

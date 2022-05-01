@@ -1,5 +1,4 @@
 <script setup lang="ts">
-	import Navbar from "@/components/navbar.vue"
 	import Grid from "@/components/grid.vue"
 	import Keyboard from "@/components/keyboard.vue"
 	import { ref, onMounted } from "vue";
@@ -22,7 +21,7 @@
 	const keys = ref([])
 	const clickedKey = ref("")
 	let result: Response
-	const server: string = "http://localhost:8081/api/random"
+	const server: string = "https://wordle-348917.lm.r.appspot.com/api/random"
 
 	const onKey = (key: string) => {
 		grid.value.controllerWord(key.toUpperCase())
@@ -44,8 +43,7 @@
 	})
 </script>
 <template>
-	<div class="w-full">
-		<Navbar />
+	<div id="game" class="w-full game-container">
 		<div class="divider"></div>
 		<Grid ref="grid" :keys="keys" @submit="onSubmit"/>
 		<Keyboard ref="kb" @onKey="onKey"/>
@@ -57,5 +55,8 @@
 	width: 100%;
 	height: 2px;
 	background: gray;
+}
+.game-container {
+	transition: all 1s;
 }
 </style>

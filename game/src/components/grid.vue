@@ -1,6 +1,6 @@
 <template>
 	<div style="gap: 10px" class="flex flex-col w-full justify-center items-center mt-10">
-		<div v-for="(row, i) in rows" :id="row.id" class="w-full">
+		<div v-for="(row, i) in rows" :id="row.id" :key="i" class="w-full">
 			<div style="gap: 10px" class="flex flex-row justify-center">
 				<div class="box box-border text-light-800 flex justify-center items-center font-bold text-[2.23rem] rounded-md"
 					:class="{ 'box-full': !!row.value[idx - 1] }" v-for="idx in 5" :id="row.id + '-' + (idx - 1)" :key="idx">{{
@@ -10,6 +10,7 @@
 		</div>
 		<Alert ref="alert" :text="'Invalid Word'" />
 		<div v-show="isLottie" id="lottie" style="position: fixed; width: 100vw; height: 100vh; top: 50px"></div>
+		<Winner :is-winner="isWinner"/>
 	</div>
 </template>
 
@@ -17,6 +18,7 @@
 import Lottie from 'lottie-web'
 import Alert from './helpers/alert.vue'
 import { reactive, onMounted, ref, computed } from 'vue';
+import Winner from "@/components/winner.vue"
 interface Keys {
 	match: boolean,
 	contains: boolean
@@ -38,7 +40,17 @@ const emits = defineEmits(['submit'])
 const activeRow = ref(0)
 const alert = ref()
 const isLottie = ref(false)
+const isWinner = ref(false)
+
 function controllerWord(key: string) {
+	if (key.toLowerCase() == 'enter') {
+		emits('submit', rows[activeRow.value].value)
+		return
+	}
+	if (key.toLowerCase() == 'backspace') {
+		rows[activeRow.value].value = rows[activeRow.value].value.slice(0, -1)
+		return
+	}
 	if (rows[activeRow.value].value.length < 5) {
 		rows[activeRow.value].value += key
 	}
@@ -67,6 +79,7 @@ async function onSubmitSuccess(values: Keys[]) {
 	if (isFound === 5) {
 		stopListen()
 		firework()
+		isWinner.value = true
 	}
 	activeRow.value += 1
 }
@@ -95,7 +108,7 @@ const firework = () => {
 		renderer: "svg",
 		loop: false,
 		autoplay: true,
-		path: "src/assets/lottie/data.json",
+		path: "assets/lottie/data.json",
 	})
 }
 const listenKey = () => {
@@ -114,7 +127,8 @@ onMounted(() => {
 defineExpose({
 	controllerWord,
 	onSubmitSuccess,
-	err
+	err,
+	isWinner
 })
 </script>
 
