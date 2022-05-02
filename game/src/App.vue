@@ -1,6 +1,7 @@
 <script setup lang="ts">
 import Game from './pages/game.vue'
 import Navbar from "@/components/navbar.vue"
+
 </script>
 
 <template>

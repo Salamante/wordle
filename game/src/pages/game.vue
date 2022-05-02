@@ -21,10 +21,21 @@
 	const keys = ref([])
 	const clickedKey = ref("")
 	let result: Response
+	// https://wordle-348917.lm.r.appspot.com
 	const server: string = "https://wordle-348917.lm.r.appspot.com/api/random"
 
 	const onKey = (key: string) => {
+		console.log("key is : ", key)
 		grid.value.controllerWord(key.toUpperCase())
+	}
+	const onEnter = () => {
+		grid.value.handleKeyDown('enter')
+	}
+	const onBackspace = () => {
+		grid.value.handleKeyDown('backspace')
+	}
+	const onRestart = async () => {
+		await axios.get("https://wordle-348917.lm.r.appspot.com/api/refresh")
 	}
 	const onSubmit = async (res: any) => {
 		try {
@@ -45,8 +56,8 @@
 <template>
 	<div id="game" class="w-full game-container">
 		<div class="divider"></div>
-		<Grid ref="grid" :keys="keys" @submit="onSubmit"/>
-		<Keyboard ref="kb" @onKey="onKey"/>
+		<Grid ref="grid" :keys="keys" @submit="onSubmit" @onRestart="onRestart"/>
+		<Keyboard ref="kb" @onKey="onKey" @onEnter="onEnter" @onBackspace="onBackspace"/>
 	</div>
 </template>
 

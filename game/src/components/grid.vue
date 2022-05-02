@@ -10,7 +10,7 @@
 		</div>
 		<Alert ref="alert" :text="'Invalid Word'" />
 		<div v-show="isLottie" id="lottie" style="position: fixed; width: 100vw; height: 100vh; top: 50px"></div>
-		<Winner :is-winner="isWinner"/>
+		<Winner ref="winner" @onRestart="onRestart"/>
 	</div>
 </template>
 
@@ -36,70 +36,84 @@ const props = defineProps({
 		default: []
 	}
 })
-const emits = defineEmits(['submit'])
+const emits = defineEmits(['submit', 'onRestart'])
 const activeRow = ref(0)
 const alert = ref()
 const isLottie = ref(false)
-const isWinner = ref(false)
+const winner = ref()
+const canInput = ref(true)
 
 function controllerWord(key: string) {
-	if (key.toLowerCase() == 'enter') {
-		emits('submit', rows[activeRow.value].value)
-		return
-	}
-	if (key.toLowerCase() == 'backspace') {
-		rows[activeRow.value].value = rows[activeRow.value].value.slice(0, -1)
-		return
-	}
 	if (rows[activeRow.value].value.length < 5) {
 		rows[activeRow.value].value += key
 	}
 }
-function controllerRow() { }
+
 async function onSubmitSuccess(values: Keys[]) {
-	let isFound: number = 0
-	for (let i = 0; i < values.length; i++) {
-		await (function sleep() {
-			return new Promise((resolve) => {
-				setTimeout(resolve, 300)
-			})
-		})()
-		const el: any = document.querySelector<HTMLElement>(`#row-${activeRow.value}-${i}`)
-		if (!values[i].contains) {
-			anim(el, "#3d4054")
-			continue
-		}
-		if (!values[i].match && values[i].contains) {
-			anim(el, "#f3c237")
-		} else {
-			anim(el, "#6ac66a")
-			isFound += 1
-		}
-	}
-	if (isFound === 5) {
+	return new Promise<void>(async (res) => {
 		stopListen()
-		firework()
-		isWinner.value = true
-	}
-	activeRow.value += 1
+		canInput.value = false
+		let isFound: number = 0
+		for (let i = 0; i < values.length; i++) {
+			await (function sleep() {
+				return new Promise((resolve) => {
+					setTimeout(resolve, 300)
+				})
+			})()
+			const el: any = document.querySelector<HTMLElement>(`#row-${activeRow.value}-${i}`)
+			if (!values[i].contains) {
+				anim(el, "#3d4054")
+				continue
+			}
+			if (!values[i].match && values[i].contains) {
+				anim(el, "includes-bg")
+			} else {
+				anim(el, "success-bg")
+				isFound += 1
+			}
+		}
+		if (isFound === 5) {
+			firework()
+			winner.value.display(true)
+		} else {
+			listenKey()
+			canInput.value = true
+		}
+		activeRow.value += 1
+		res()
+	})
 }
-async function handleKeyDown(e: KeyboardEvent) {
+async function handleKeyDown(e: any) {
+	if(!canInput.value) {
+		return
+	}
+	let key = e
+
+	if(typeof e == 'object') key = e.key
 	console.log(e.key)
-	if (e.key.toLowerCase() == 'backspace') {
+	if (key.toLowerCase() == 'backspace') {
 		rows[activeRow.value].value = rows[activeRow.value].value.slice(0, -1)
 		return
 	}
-	if (e.key.toLowerCase() == 'enter') {
+	if (key.toLowerCase() == 'enter') {
 		emits('submit', rows[activeRow.value].value)
 	}
-	if (props.keys.includes(e.key)) {
-		controllerWord(e.key.toUpperCase())
+	if (props.keys.includes(key)) {
+		controllerWord(key.toUpperCase())
 	}
 }
-const anim = (el: HTMLElement, color: string) => {
+const onRestart = () => {
+	rows.forEach(e => e.value = "")
+	activeRow.value = 0
+	emits('onRestart')
+	canInput.value = true
+	isLottie.value = false
+	listenKey()
+}
+const anim = (el: HTMLElement, cls: string) => {
 	el.classList.toggle("rotate")
 	el.classList.remove("box-border")
-	el.style.background = color
+	el.classList.toggle(cls)
 }
 const firework = () => {
 	isLottie.value = true
@@ -127,8 +141,8 @@ onMounted(() => {
 defineExpose({
 	controllerWord,
 	onSubmitSuccess,
+	handleKeyDown,
 	err,
-	isWinner
 })
 </script>
 
@@ -137,7 +151,7 @@ defineExpose({
 	max-width: 50px;
 	aspect-ratio: 1;
 	flex-grow: 1;
-	transition: background 0.3s, transform 2s;
+	transition: background 0.3s, transform 1s;
 }
 
 .box-border {
@@ -149,6 +163,12 @@ defineExpose({
 }
 
 .rotate {
-	transform: rotate3d(0, 0.5, 0, 360deg);
+	transform: rotate3d(1, 0, 0, 360deg);
+}
+.success-bg {
+	background: #6ac66a;
+}
+.includes-bg {
+	background: #f3c237;
 }
 </style>

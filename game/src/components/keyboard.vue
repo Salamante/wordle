@@ -11,9 +11,15 @@ import { reactive, ref, onMounted } from 'vue';
 	])
 	const keys_all: any = ref([keys_first_row.value, keys_second_row.value, keys_third_row.value].flat())
 
-	const emit = defineEmits(["onKey"])
-	function onClickKey(key: string) {
+	const emit = defineEmits(["onKey", "onEnter", "onBackspace"])
+	function onKey(key: string) {
 		emit('onKey', key)
+	}
+	function onEnter() {
+		emit('onEnter')
+	}
+	function onBackspace() {
+		emit('onBackspace')
 	}
 	onMounted(() => {
 	})
@@ -28,7 +34,7 @@ import { reactive, ref, onMounted } from 'vue';
 			<div
 				v-for="(key, i) in keys_first_row"
 				class="h-8 w-8 bg-dark-500 text-light-50 rounded-md flex items-center justify-center key"
-				@click="onClickKey(key)"
+				@click="onKey(key)"
 			>
 				<span>{{ key.toUpperCase() }}</span>
 			</div>
@@ -37,7 +43,7 @@ import { reactive, ref, onMounted } from 'vue';
 			<div
 				v-for="(key, i) in keys_second_row"
 				class="h-8 w-8 bg-dark-500 text-light-50 rounded-md flex items-center justify-center key"
-				@click="onClickKey(key)"
+				@click="onKey(key)"
 			>
 				<span>{{ key != 'i' ? key.toUpperCase() : key }}</span>
 			</div>
@@ -45,20 +51,20 @@ import { reactive, ref, onMounted } from 'vue';
 		<div style="gap: 5px" class="flex flex-row justify-center content-center w-full mt-2 cursor-pointer">
 			<div
 				class="h-8 w-16 bg-dark-500 text-light-50 rounded-md flex items-center justify-center key"
-				@click="onClickKey('backspace')"
+				@click="onBackspace"
 			>
 				<i class="fa-regular fa-delete-left"></i>
 			</div>
 			<div
 				v-for="(key, i) in keys_third_row"
 				class="h-8 w-8 bg-dark-500 text-light-50 rounded-md flex items-center justify-center key"
-				@click="onClickKey(key)"
+				@click="onKey(key)"
 			>
 				<span>{{ key != 'i' ? key.toUpperCase() : key }}</span>
 			</div>
 			<div
 				class="h-8 w-16 bg-dark-500 text-light-50 rounded-md flex items-center justify-center key"
-				@click="onClickKey('enter')"
+				@click="onEnter"
 			>
 				<span>ENTER</span>
 			</div>

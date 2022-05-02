@@ -1,6 +1,6 @@
 <template>
 	<transition name="fade">
-		<div v-if="isShow && _isShow" class="fixed top-0 flex modal-bg">
+		<div v-if="isShow" class="fixed top-0 flex modal-bg">
 			<div class="w-80 bg-dark-500 rounded-lg block overflow-hidden shadow-xl shadow-current mt-40">
 				<!-- Header::start -->
 				<div class="p-2 relative w-full flex justify-center bg-gray-600">
@@ -11,7 +11,7 @@
 				</div>
 				<!-- Header::end -->
 				<div class="flex flex-col justify-center items-center p-3 text-light-900 text-xs">
-					<div class="btn">RESTART</div>
+					<div class="btn" @click="onRestart">RESTART</div>
 					<p>or press <span class="italic">enter</span></p>
 					<div class="w-full p-2 mt-4 text-center bg-gray-500 rounded-lg btn">
 						<p><i class="fa-thin fa-share-nodes"></i> Share</p>
@@ -28,18 +28,26 @@
 <script setup lang="ts">
 import { ref, computed } from 'vue';
 
-const props = defineProps({
-	isWinner: Boolean
-})
+
+const emit = defineEmits(['onRestart'])
+const isShow = ref(false)
+
+const display = (bool: boolean) => {
+	isShow.value = bool
+}
 
 const onClose = () => {
-	_isShow.value = false
+	isShow.value = false
 }
-const _isShow = ref(false)
-const isShow = computed(() => {
-	_isShow.value = true
-	return props.isWinner
+const onRestart = () => {
+	isShow.value = false
+	emit('onRestart')
+}
+
+defineExpose({
+	display
 })
+
 </script>
 
 <style scoped>

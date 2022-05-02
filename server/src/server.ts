@@ -8,14 +8,26 @@ const pathBuild: string = path.join(__dirname + '/../dist')
 const app = express()
 const mw = json()
 const port: String = process.env.PORT || '8081'
-const rndWord: string = "table"
+const list: string[] = ['table', 'cable', 'sneak', 'kitty', 'paper', 'alert', 'glass', 'world', 'abuse', 'beach', 'cross', 'drama', 'enemy', 'entry', 'field', 'green', 'layer', 'music', 'novel', 'nurse', 'phone']
+
+function getRnd() {
+	const l = list.length
+	let n = Math.random() * 20
+	n = Math.round(n % l)
+	console.log("n is: ", n, " word is: ", list[n])
+	return list[n]
+}
+let word = getRnd()
 
 app.use(cors())
 app.use(express.static(pathBuild))
 
 app.get('/api/random/:word', mw, (req: Request, res: Response) => {
 	console.log(req.params.word)
-	res.send(Test(rndWord, req.params.word))
+	res.send(Test(word, req.params.word))
+})
+app.get('/api/refresh', mw, (req: Request, res: Response) => {
+	word = getRnd()
 })
 
 app.listen(port, () => {
