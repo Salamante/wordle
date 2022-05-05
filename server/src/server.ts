@@ -20,7 +20,11 @@ function getRnd() {
 let word = getRnd()
 
 app.use(cors())
-app.use(express.static(pathBuild))
+app.set('etag', false)
+app.disable('view cache')
+app.use(express.static(pathBuild, { cacheControl: true, setHeaders: (res: Response) => {
+		res.set('Cache-Control', 'no-store')
+} }))
 
 app.get('/api/random/:word', mw, (req: Request, res: Response) => {
 	console.log(req.params.word)

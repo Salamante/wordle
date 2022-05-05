@@ -61,14 +61,21 @@ async function onSubmitSuccess(values: Keys[]) {
 				})
 			})()
 			const el: any = document.querySelector<HTMLElement>(`#row-${activeRow.value}-${i}`)
+			let k: any = document.getElementById(`key-${rows[activeRow.value].value[i].toLowerCase()}`)
 			if (!values[i].contains) {
-				anim(el, "#3d4054")
+				anim(el, ["not-includes-bg","animate__animated", "animate__flipInX"])
+				k.setAttribute("style", "background: #3d4054")
 				continue
 			}
 			if (!values[i].match && values[i].contains) {
-				anim(el, "includes-bg")
+				anim(el, ["includes-bg", "animate__animated", "animate__flipInX"])
+				k.classList.add("animate__animated", "animate__flipInX")
+				k.setAttribute("style", "background: #f3c237")
 			} else {
-				anim(el, "success-bg")
+				anim(el, ["success-bg", "animate__animated", "animate__flipInX"])
+				k.classList.toggle("success-bg")
+				k.classList.add("animate__animated", "animate__flipInX")
+				k.setAttribute("style", "background: #6ac66a")
 				isFound += 1
 			}
 		}
@@ -110,10 +117,12 @@ const onRestart = () => {
 	isLottie.value = false
 	listenKey()
 }
-const anim = (el: HTMLElement, cls: string) => {
-	el.classList.toggle("rotate")
+const anim = (el: HTMLElement, cls: string[]) => {
+	// el.classList.toggle("rotate")
 	el.classList.remove("box-border")
-	el.classList.toggle(cls)
+	cls.forEach(e => {
+		el.classList.add(e)
+		})
 }
 const firework = () => {
 	isLottie.value = true
@@ -151,7 +160,7 @@ defineExpose({
 	max-width: 50px;
 	aspect-ratio: 1;
 	flex-grow: 1;
-	transition: background 0.3s, transform 1s;
+	transition: background 0.3s
 }
 
 .box-border {
@@ -161,14 +170,13 @@ defineExpose({
 .box-full {
 	background: rgb(32, 32, 32);
 }
-
-.rotate {
-	transform: rotate3d(1, 0, 0, 360deg);
-}
 .success-bg {
-	background: #6ac66a;
+	background: #6ac66a !important;
 }
 .includes-bg {
-	background: #f3c237;
+	background: #f3c237 !important;
+}
+.not-includes-bg {
+	background-color: #3d4054 !important;
 }
 </style>
